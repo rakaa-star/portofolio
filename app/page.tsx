@@ -1,159 +1,74 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import Link from "next/link";
+import Image from "next/image";
+import TechMarquee from "@/components/TechMarquee";
+import ProjectCard from "@/components/ProjectCard";
+import PrestasiSection from "@/components/PrestasiSection";
 import { supabase } from "@/lib/supabase";
-
-// ==========================================
-// DATA PORTOFOLIO - RAKA FEBRIAN
-// ==========================================
-
-const TECH_STACK = [
-  { name: "Vue.js", bg: "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" },
-  { name: "React.js", bg: "bg-cyan-500/10 border-cyan-500/30 text-cyan-400" },
-  { name: "TypeScript", bg: "bg-blue-500/10 border-blue-500/30 text-blue-400" },
-  { name: "Tailwind CSS", bg: "bg-sky-500/10 border-sky-500/30 text-sky-400" },
-  { name: "Next.js", bg: "bg-zinc-500/10 border-zinc-500/30 text-zinc-200" },
-  { name: "Node.js", bg: "bg-green-500/10 border-green-500/30 text-green-400" },
-  { name: "JavaScript", bg: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400" },
-  { name: "Git & GitHub", bg: "bg-orange-500/10 border-orange-500/30 text-orange-400" },
-];
-
-const EXPERIENCES = [
-  {
-    company: "Tech Corp Indonesia",
-    role: "Front-End Developer",
-    period: "2024 - Sekarang",
-    description: [
-      "Mengembangkan aplikasi web berbasis React.js dan Next.js dengan fokus pada optimasi performa dan SEO.",
-      "Bekerja sama dengan tim UI/UX untuk mengimplementasikan design system yang konsisten dan responsif.",
-      "Meningkatkan skor Lighthouse website utama dari 65 menjadi 95+.",
-    ],
-    tech: ["Next.js", "TypeScript", "Tailwind CSS"],
-  },
-  {
-    company: "Digital Creative Studio",
-    role: "Junior Web Developer",
-    period: "2023 - 2024",
-    description: [
-      "Membangun lebih dari 10 landing page interaktif menggunakan Vue.js dan Tailwind CSS.",
-      "Mengintegrasikan REST API backend ke dalam antarmuka pengguna secara real-time.",
-      "Melakukan refactoring kode legacy untuk mempercepat loading speed halaman.",
-    ],
-    tech: ["Vue.js", "JavaScript", "REST API"],
-  },
-  {
-    company: "Freelance / Remote",
-    role: "Frontend Specialist",
-    period: "2022 - 2023",
-    description: [
-      "Menerima proyek pembuatan portofolio, dashboard admin, dan e-commerce dari klien lokal.",
-      "Memastikan tampilan web kompatibel cross-browser dan mobile-friendly.",
-    ],
-    tech: ["React.js", "Tailwind CSS", "Framer Motion"],
-  },
-];
-
-const EDUCATION_TIMELINE = [
-  {
-    type: "Education",
-    title: "S1 Teknik Informatika / Sistem Informasi",
-    institution: "Universitas Teknologi",
-    period: "2020 - 2024",
-    description: "Fokus pada Rekayasa Perangkat Lunak dan Pemrograman Web.",
-  },
-  {
-    type: "Achievement",
-    title: "Juara 1 Hackathon Web Development",
-    institution: "National Tech Competition",
-    period: "2023",
-    description: "Membuat platform interaktif berbasis Next.js dalam waktu 48 jam.",
-  },
-  {
-    type: "Certification",
-    title: "Frontend Developer Career Path",
-    institution: "Dicoding / Coursera",
-    period: "2023",
-    description: "Sertifikasi keahlian spesialisasi React, Vue, dan Web Performance Optimization.",
-  },
-];
-
-const PROJECTS = [
-  {
-    title: "E-Commerce Modern Dashboard",
-    category: "Web Application",
-    description: "Dashboard analitik real-time dengan chart interaktif, dark mode, dan manajemen produk.",
-    tech: ["Next.js", "TypeScript", "Tailwind CSS", "Recharts"],
-    link: "#",
-    gradient: "from-cyan-600 via-blue-600 to-indigo-800",
-  },
-  {
-    title: "AI Writing Assistant App",
-    category: "SaaS Platform",
-    description: "Platform pembuat konten berbasis AI dengan antarmuka yang bersih dan editor kaya fitur.",
-    tech: ["React.js", "Tailwind CSS", "OpenAI API"],
-    link: "#",
-    gradient: "from-purple-600 via-indigo-600 to-blue-800",
-  },
-  {
-    title: "Interactive Learning Hub",
-    category: "EdTech",
-    description: "Aplikasi pembelajaran interaktif dengan fitur kuis, modul video, dan pencapaian pengguna.",
-    tech: ["Vue.js", "Pinia", "Tailwind CSS"],
-    link: "#",
-    gradient: "from-emerald-600 via-teal-600 to-cyan-800",
-  },
-];
-
-// ==========================================
-// KOMPONEN UTAMA
-// ==========================================
+import { useLanguage } from "@/lib/languageContext";
+import { TechIcon } from "@/components/TechIcon";
 
 export default function Home() {
-  const [scrolled, setScrolled] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("All");
-
-  // Form State & Feedback
-  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const { t, lang, openCvModal } = useLanguage();
 
   // Typing Effect
   const [textIndex, setTextIndex] = useState(0);
-  const roles = ["Front-End Developer", "UI/UX Enthusiast", "React & Vue Specialist"];
+  const roles = t.hero.roles;
   const [displayText, setDisplayText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Inisialisasi AOS (Animate On Scroll)
-  useEffect(() => {
-    AOS.init({
-      duration: 800,
-      once: true,
-      easing: "ease-out-cubic",
-      offset: 120,
-    });
-  }, []);
+  // Projects Filter & Search State
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Scroll Handler Navbar
+  // Contact Form State (Supabase) & UI State
+  const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "success" | "error">("idle");
+  const [copiedEmail, setCopiedEmail] = useState(false);
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [localTime, setLocalTime] = useState("");
+
+  // Live Local Time (WIB / Sidoarjo, Indonesia)
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 40);
+    const updateTime = () => {
+      const now = new Date();
+      const timeString = now.toLocaleTimeString("en-US", {
+        timeZone: "Asia/Jakarta",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true,
+      });
+      setLocalTime(timeString);
     };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Typing Effect Logic
+  const handleCopyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText("raka.febrian@example.com");
+      setCopiedEmail(true);
+      setTimeout(() => setCopiedEmail(false), 3000);
+    } catch (err) {
+      console.error("Gagal menyalin email:", err);
+    }
+  };
+
+
+  // Typing animation for roles
   useEffect(() => {
     const currentRole = roles[textIndex % roles.length];
-    const speed = isDeleting ? 40 : 90;
+    const speed = isDeleting ? 30 : 80;
 
     const timer = setTimeout(() => {
       if (!isDeleting && displayText === currentRole) {
-        setTimeout(() => setIsDeleting(true), 1800);
+        setTimeout(() => setIsDeleting(true), 2200);
       } else if (isDeleting && displayText === "") {
         setIsDeleting(false);
         setTextIndex((prev) => prev + 1);
@@ -167,14 +82,24 @@ export default function Home() {
     }, speed);
 
     return () => clearTimeout(timer);
-  }, [displayText, isDeleting, textIndex]);
+  }, [displayText, isDeleting, textIndex, roles]);
 
   // Project Categories Dynamic Filter
-  const categories = ["All", ...Array.from(new Set(PROJECTS.map((p) => p.category)))];
-  const filteredProjects =
-    selectedCategory === "All"
-      ? PROJECTS
-      : PROJECTS.filter((p) => p.category === selectedCategory);
+  const projectItems = t.projects.items;
+  const uniqueCategories = Array.from(new Set(projectItems.map((p) => p.category)));
+  const categories = [
+    { id: "all", label: t.projects.allCategory },
+    ...uniqueCategories.map((c) => ({ id: c, label: c })),
+  ];
+
+  const filteredProjects = projectItems.filter((proj) => {
+    const matchesCategory = selectedCategory === "all" || proj.category === selectedCategory;
+    const matchesSearch =
+      proj.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      proj.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      proj.tech.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesCategory && matchesSearch;
+  });
 
   // Form Submit Handler (Supabase)
   const handleSubmit = async (e: React.FormEvent) => {
@@ -201,469 +126,841 @@ export default function Home() {
       setSubmitStatus("error");
     } finally {
       setIsSubmitting(false);
-      setTimeout(() => setSubmitStatus("idle"), 5000);
+      setTimeout(() => setSubmitStatus("idle"), 6000);
     }
   };
 
-  const navLinks = [
-    { name: "About", href: "#about" },
-    { name: "Experience", href: "#experience" },
-    { name: "Education", href: "#education" },
-    { name: "Projects", href: "#projects" },
-    { name: "Contact", href: "#contact" },
+  const scrollTo = (id: string) => {
+    const elem = document.getElementById(id);
+    if (elem) {
+      elem.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const TECH_TOOLS = [
+    "HTML5",
+    "CSS3",
+    "JavaScript",
+    "TypeScript",
+    "React.js",
+    "Next.js",
+    "Vue.js",
+    "Tailwind CSS",
+    "PHP",
+    "Laravel",
+    "MySQL",
+    "Supabase",
+    "Git",
+    "GitHub",
+    "Figma",
+    "Vercel",
+  ];
+
+  const renderOrbitIcon = (iconKey: string) => {
+    switch (iconKey) {
+      case "code":
+        return (
+          <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+        );
+      case "zap":
+        return (
+          <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        );
+      case "layout":
+        return (
+          <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+          </svg>
+        );
+      case "box":
+        return (
+          <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        );
+      case "database":
+        return (
+          <svg className="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+          </svg>
+        );
+      case "target":
+        return (
+          <svg className="w-4 h-4 text-rose-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        );
+      default:
+        return (
+          <span className="w-2 h-2 rounded-full bg-cyan-400" />
+        );
+    }
+  };
+
+  const SOCIAL_LINKS = [
+    {
+      name: "LinkedIn",
+      href: "https://linkedin.com",
+      icon: (
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
+        </svg>
+      ),
+    },
+    {
+      name: "GitHub",
+      href: "https://github.com/mrrakaa2345-design",
+      icon: <TechIcon name="github" className="w-4 h-4" />,
+    },
+    {
+      name: "Email",
+      href: "mailto:raka.febrian@example.com",
+      icon: (
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+        </svg>
+      ),
+    },
+    {
+      name: "Instagram",
+      href: "https://instagram.com",
+      icon: (
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+        </svg>
+      ),
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-[#0b0f17] text-slate-100 font-sans tracking-wide selection:bg-cyan-500 selection:text-black scroll-smooth relative overflow-x-hidden">
+    <div className="space-y-28 sm:space-y-40 pb-20 scroll-smooth">
       
-      {/* BACKGROUND GLOW DEKORATIF */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[300px] sm:w-[600px] md:w-[1000px] h-[300px] sm:h-[500px] bg-gradient-to-tr from-cyan-500/10 via-blue-600/10 to-transparent blur-[100px] sm:blur-[140px] pointer-events-none z-0"></div>
+      {/* 1. HERO SECTION (PERSONAL GREETING, HERO PHOTO FRAME CARD & HIGH CONTRAST) */}
+      <section
+        id="home"
+        className="px-4 sm:px-8 max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 min-h-[82vh] pt-4 sm:pt-8 scroll-mt-28 relative"
+      >
+        {/* Left Column: Greeting, Dynamic Role & CTAs */}
+        <div className="flex-1 space-y-7 text-center lg:text-left z-10" data-aos="fade-right">
+          
+          {/* Status & Location Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/90 border border-slate-800 text-xs font-mono shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="text-slate-300 font-semibold">{t.hero.statusBadge}</span>
+            <span className="text-slate-600 hidden sm:inline">•</span>
+            <span className="text-slate-400 hidden sm:inline">{t.hero.locationBadge}</span>
+          </div>
 
-      {/* 1. STICKY / FLOATING NAVBAR */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 sm:px-8 py-4 transition-all duration-500 pointer-events-none">
-        <nav
-          className={`mx-auto pointer-events-auto transition-all duration-500 ease-in-out ${
-            scrolled
-              ? "max-w-5xl rounded-full bg-[#0b0f17]/80 backdrop-blur-xl border border-slate-800/80 py-3 px-6 shadow-2xl shadow-cyan-950/30"
-              : "max-w-7xl rounded-2xl bg-transparent py-4 px-4 border border-transparent"
-          }`}
-        >
-          <div className="w-full flex items-center justify-between">
-            <a href="#" className="font-extrabold text-2xl tracking-tight flex items-center gap-3 group">
-              <span className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-500/30 group-hover:scale-110 group-hover:rotate-6 transition-all duration-300 font-mono text-base font-bold shadow-lg shadow-cyan-500/10">
-                RF
+          {/* Personal Greeting Headline */}
+          <div className="space-y-3">
+            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.08] font-heading">
+              {t.hero.greeting}{" "}
+              <span className="text-cyan-400 font-black">
+                {t.hero.name}
               </span>
-              <span className="text-white group-hover:text-cyan-400 transition-colors">Portofolio</span>
-            </a>
+            </h1>
 
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8 text-base font-semibold text-slate-300">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  className="hover:text-cyan-400 transition-all hover:-translate-y-0.5"
-                >
-                  {link.name}
-                </a>
-              ))}
-            </div>
+            {/* Dynamic Typewriter Role */}
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-300 min-h-[40px] flex items-center justify-center lg:justify-start gap-2">
+              <span className="text-slate-400 font-normal">{t.hero.rolePrefix}</span>
+              <span className="text-white font-extrabold border-b-2 border-cyan-400/50 pb-0.5 font-heading">
+                {displayText}
+              </span>
+              <span className="w-0.5 h-6 sm:h-7 bg-cyan-400 animate-pulse inline-block" />
+            </h2>
+          </div>
 
-            <div className="hidden md:block">
-              <a
-                href="#contact"
-                className="text-sm font-bold px-6 py-2.5 rounded-full border-2 border-cyan-500/40 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-400 hover:shadow-lg hover:shadow-cyan-500/20 transition-all duration-300 active:scale-95 inline-block"
-              >
-                Get In Touch
-              </a>
-            </div>
+          {/* Bio Description */}
+          <p className="text-slate-300 text-base sm:text-lg leading-relaxed max-w-2xl font-normal mx-auto lg:mx-0">
+            {t.hero.bio}
+          </p>
 
-            {/* Mobile Hamburger Button */}
+          {/* Clear Call-To-Action (CTA) Buttons Bar */}
+          <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-2">
+            {/* Primary CTA: Explore Projects */}
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-slate-300 hover:text-white focus:outline-none p-2 rounded-lg bg-slate-900/50 border border-slate-800"
-              aria-label="Toggle Navigation"
+              type="button"
+              onClick={() => scrollTo("projects")}
+              className="w-full sm:w-auto text-center px-7 py-3.5 rounded-full bg-cyan-500 hover:bg-cyan-400 text-black font-extrabold text-sm sm:text-base shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/50 hover:-translate-y-0.5 transition-all duration-300 active:scale-95 cursor-pointer flex items-center justify-center gap-2"
             >
-              {isMobileMenuOpen ? (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              ) : (
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
-              )}
+              <span>{t.hero.viewProjects}</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+
+            {/* Secondary CTA: Lihat CV Button (Matching Screenshot) */}
+            <button
+              type="button"
+              onClick={openCvModal}
+              className="w-full sm:w-auto text-center px-6 py-3.5 rounded-full bg-[#0d121d] hover:bg-[#151c2d] text-white border border-slate-700/90 hover:border-cyan-500/60 font-bold text-sm sm:text-base shadow-md transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2 cursor-pointer group"
+            >
+              <svg
+                className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <span>{t.nav.viewCv}</span>
+            </button>
+
+            {/* Tertiary CTA: Contact */}
+            <button
+              type="button"
+              onClick={() => scrollTo("contact")}
+              className="w-full sm:w-auto text-center px-6 py-3.5 rounded-full bg-slate-900/80 border border-slate-800 text-slate-300 font-semibold text-sm sm:text-base hover:bg-slate-800 hover:text-white hover:border-slate-700 transition-all duration-300 active:scale-95 cursor-pointer"
+            >
+              {t.hero.contactMe}
             </button>
           </div>
 
-          {/* Mobile Navigation Drawer */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden mt-4 pt-4 border-t border-slate-800 flex flex-col gap-4 animate-fadeIn">
-              {navLinks.map((link) => (
-                <a
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-slate-300 hover:text-cyan-400 font-semibold text-lg py-1 transition-colors"
-                >
-                  {link.name}
-                </a>
-              ))}
-              <a
-                href="#contact"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="text-center text-sm font-bold px-6 py-3 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 transition-all mt-2"
+          {/* Core Tech Stack Strip */}
+          <div className="pt-4 border-t border-slate-800/80 flex flex-wrap items-center justify-center lg:justify-start gap-2 text-xs font-mono">
+            <span className="text-slate-500 font-semibold uppercase tracking-wider mr-1">
+              {t.hero.techPillTitle}:
+            </span>
+            {["React 19", "Next.js 15", "TypeScript", "Tailwind CSS", "Supabase", "Figma"].map((tech) => (
+              <span
+                key={tech}
+                className="px-3 py-1 rounded-lg bg-slate-900/90 border border-slate-800 text-slate-300 font-medium"
               >
-                Get In Touch
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Right Column: Tactile Photo Frame & Creator Card */}
+        <div
+          className="w-full max-w-sm lg:max-w-md"
+          data-aos="zoom-in"
+          data-aos-delay="150"
+        >
+          <div className="relative rounded-3xl bg-[#0e131d]/90 backdrop-blur-xl border border-slate-800 p-6 sm:p-7 shadow-2xl space-y-6 hover:border-cyan-500/40 transition-all duration-500 group">
+            
+            {/* Card Header: Photo Avatar Frame + Online Status */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800/80">
+              <div className="flex items-center gap-3.5">
+                <div className="relative w-14 h-14 rounded-2xl overflow-hidden border-2 border-cyan-500/40 shadow-lg shrink-0 group-hover:scale-105 transition-transform">
+                  <Image
+                    src="/raka_profile.jpg"
+                    alt="Raka Febrian"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                <div>
+                  <h3 className="text-white font-bold text-base font-heading">Raka Febrian</h3>
+                  <p className="text-xs text-slate-400 font-mono">Front-End & UI Specialist</p>
+                </div>
+              </div>
+
+              <div className="text-right">
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 text-[11px] font-semibold border border-emerald-500/20 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  Online
+                </span>
+              </div>
+            </div>
+
+            {/* School & Discipline */}
+            <div className="space-y-1 text-xs">
+              <p className="text-slate-400 font-mono uppercase tracking-wider text-[11px]">Institusi</p>
+              <p className="text-slate-200 font-semibold text-sm">
+                SMK Telkom Sidoarjo — Sistem Informasi, Jaringan & Aplikasi (SIJA)
+              </p>
+            </div>
+
+            {/* Featured Work Spotlight Container */}
+            <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-mono">
+                <span className="text-cyan-400 font-bold uppercase">{t.hero.cardLatestWorkTitle}</span>
+                <span className="text-slate-500">2026</span>
+              </div>
+              <h4 className="text-sm font-bold text-white font-heading">
+                {t.hero.cardLatestWorkName}
+              </h4>
+              <p className="text-xs text-slate-400 leading-relaxed">
+                {t.hero.cardLatestWorkDesc}
+              </p>
+            </div>
+
+            {/* Quick Action Links */}
+            <div className="pt-2 flex items-center gap-2.5">
+              <button
+                type="button"
+                onClick={openCvModal}
+                className="flex-1 py-2.5 rounded-xl bg-slate-950 hover:bg-slate-800 border border-slate-800 text-slate-200 text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <span>{t.nav.viewCv}</span>
+              </button>
+
+              <a
+                href="mailto:raka.febrian@example.com"
+                className="flex-1 py-2.5 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 text-xs font-bold transition-all text-center flex items-center justify-center gap-1.5 cursor-pointer"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                <span>Email Me</span>
               </a>
             </div>
-          )}
-        </nav>
-      </header>
-
-      {/* 2. HERO SECTION */}
-      <section id="about" className="relative z-10 pt-36 sm:pt-48 pb-16 sm:pb-24 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12 sm:gap-16 min-h-[90vh]">
-        <div className="flex-1 space-y-6 sm:space-y-8 text-center md:text-left" data-aos="fade-right">
-          {/* Status Badge */}
-          <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs sm:text-sm font-semibold shadow-sm hover:scale-105 transition-transform duration-300">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
-            Available for Work
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white leading-tight">
-            Hi, Saya <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-500 animate-pulse">Raka Febrian</span>
-          </h1>
-
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-slate-200 min-h-[40px] flex items-center justify-center md:justify-start gap-2">
-            <span>Saya seorang</span> <span className="text-cyan-400 font-bold">{displayText}</span>
-            <span className="w-1 h-6 sm:h-7 bg-cyan-400 animate-pulse"></span>
-          </h2>
-
-          <p className="text-slate-300 text-base sm:text-lg md:text-xl leading-relaxed max-w-2xl font-normal mx-auto md:mx-0">
-            Berfokus pada pembuatan antarmuka web yang bersih, responsif, dan kaya interaksi visual dengan performa tinggi.
-          </p>
-
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 sm:gap-5 pt-2 sm:pt-4">
-            <a
-              href="#projects"
-              className="w-full sm:w-auto text-center px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-base shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/50 hover:-translate-y-1 transition-all duration-300 active:scale-95"
-            >
-              View My Work
-            </a>
-            <a
-              href="#contact"
-              className="w-full sm:w-auto text-center px-8 py-4 rounded-xl bg-slate-800/90 border border-slate-700 text-slate-200 font-bold text-base hover:bg-slate-800 hover:border-cyan-500/50 hover:text-cyan-400 transition-all duration-300 active:scale-95"
-            >
-              Contact Me
-            </a>
-          </div>
-        </div>
-
-        {/* Profile Frame with Glow */}
-        <div className="relative group w-full max-w-[280px] sm:max-w-sm md:w-auto" data-aos="zoom-in" data-aos-delay="200">
-          <div className="absolute -inset-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-600 rounded-3xl blur-2xl opacity-50 group-hover:opacity-100 transition duration-700 group-hover:scale-110"></div>
-          
-          <div className="relative w-full aspect-[4/5] rounded-2xl border-2 border-dashed border-slate-700 bg-slate-900/90 p-4 shadow-2xl flex flex-col items-center justify-center group-hover:border-cyan-500/50 transition-all duration-500 group-hover:-translate-y-2">
-            <div className="w-full h-full rounded-xl border border-slate-800 bg-slate-950/60 flex flex-col items-center justify-center p-6 text-center">
-              <div className="w-20 h-20 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mb-4 group-hover:scale-110 group-hover:border-cyan-500/50 transition-all duration-300 shadow-md">
-                <svg className="w-10 h-10 text-slate-500 group-hover:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <p className="text-base font-bold text-slate-300 mb-1">Foto Profile</p>
-              <p className="text-xs font-mono text-slate-500">Area pasfoto / portrait</p>
-            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. TECH STACK / TOOLS */}
-      <section className="relative z-10 py-14 border-y border-slate-800/80 bg-slate-900/30 overflow-hidden backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-6 mb-8" data-aos="fade-up">
-          <p className="text-sm font-mono uppercase tracking-widest text-slate-400 font-bold text-center md:text-left">
-            Tech Stack & Tools Favorit
-          </p>
-        </div>
+      {/* 2. TECH STACK MARQUEE */}
+      <TechMarquee />
 
-        {/* Infinite Moving Tools Marquee dengan Overlay Masking */}
-        <div className="relative w-full overflow-hidden" data-aos="fade-up" data-aos-delay="100">
-          <div className="absolute left-0 top-0 bottom-0 w-16 bg-gradient-to-r from-[#0b0f17] to-transparent z-10 pointer-events-none"></div>
-          <div className="absolute right-0 top-0 bottom-0 w-16 bg-gradient-to-l from-[#0b0f17] to-transparent z-10 pointer-events-none"></div>
-          
-          <div className="flex gap-6 animate-marquee whitespace-nowrap py-2">
-            {[...TECH_STACK, ...TECH_STACK].map((item, idx) => (
-              <div
-                key={idx}
-                className={`flex items-center gap-3 px-6 py-4 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-110 hover:shadow-lg hover:shadow-cyan-500/10 cursor-pointer ${item.bg}`}
-              >
-                <span className="font-bold text-base tracking-wide">{item.name}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 4. EXPERIENCE SECTION */}
-      <section id="experience" className="relative z-10 py-20 sm:py-28 max-w-5xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-12 sm:mb-20" data-aos="fade-up">
-          <h2 className="text-3xl sm:text-5xl font-black text-white mb-4">Pengalaman Kerja</h2>
-          <p className="text-slate-400 text-base sm:text-lg">Jejak karir dan kontribusi saya dalam pengembangan perangkat lunak.</p>
-        </div>
-
-        <div className="flex flex-col md:flex-row gap-6 md:gap-10 bg-slate-900/60 backdrop-blur-md p-6 sm:p-10 rounded-3xl border border-slate-800 hover:border-cyan-500/30 transition-all duration-500 shadow-xl" data-aos="fade-up" data-aos-delay="100">
-          {/* Company List Tabs */}
-          <div className="flex md:flex-col overflow-x-auto gap-2 sm:gap-3 border-b md:border-b-0 md:border-r border-slate-800 pb-4 md:pb-0 md:pr-6 min-w-full md:min-w-[220px]">
-            {EXPERIENCES.map((exp, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveTab(index)}
-                className={`text-left px-5 py-3.5 rounded-xl text-sm sm:text-base font-bold transition-all duration-300 whitespace-nowrap ${
-                  activeTab === index
-                    ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/40 shadow-lg shadow-cyan-500/10 translate-x-0 md:translate-x-1"
-                    : "text-slate-400 hover:text-white hover:bg-slate-800/60"
-                }`}
-              >
-                {exp.company}
-              </button>
-            ))}
-          </div>
-
-          {/* Details Content */}
-          <div className="flex-1 space-y-6 pt-2 md:pt-0">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-              <h3 className="text-xl sm:text-2xl font-bold text-white">
-                {EXPERIENCES[activeTab].role}{" "}
-                <span className="text-cyan-400">@ {EXPERIENCES[activeTab].company}</span>
-              </h3>
-              <span className="text-xs font-mono font-bold text-slate-300 bg-slate-800/90 border border-slate-700 px-4 py-1.5 rounded-full w-fit">
-                {EXPERIENCES[activeTab].period}
-              </span>
-            </div>
-
-            <ul className="space-y-4 pt-2">
-              {EXPERIENCES[activeTab].description.map((desc, i) => (
-                <li key={i} className="text-slate-300 text-sm sm:text-base flex items-start gap-4 leading-relaxed">
-                  <span className="w-2 h-2 rounded-full bg-cyan-400 mt-2 shrink-0 shadow-sm shadow-cyan-400"></span>
-                  <span>{desc}</span>
-                </li>
-              ))}
-            </ul>
-
-            <div className="flex flex-wrap gap-2 sm:gap-3 pt-4">
-              {EXPERIENCES[activeTab].tech.map((t, i) => (
-                <span key={i} className="text-xs font-mono font-semibold px-3 py-1.5 rounded-lg bg-slate-800 text-slate-200 border border-slate-700">
-                  {t}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5. EDUCATION & ACHIEVEMENTS */}
-      <section id="education" className="relative z-10 py-20 sm:py-28 bg-slate-900/20 border-y border-slate-800/80">
-        <div className="max-w-5xl mx-auto px-4 sm:px-8">
-          <div className="text-center mb-12 sm:mb-20" data-aos="fade-up">
-            <h2 className="text-3xl sm:text-5xl font-black text-white mb-4">Edukasi & Pencapaian</h2>
-            <p className="text-slate-400 text-base sm:text-lg">Latar belakang pendidikan formal dan sertifikasi keahlian.</p>
-          </div>
-
-          <div className="relative border-l-2 border-slate-800 ml-4 md:ml-36 space-y-8 sm:space-y-12">
-            {EDUCATION_TIMELINE.map((item, index) => (
-              <div key={index} className="relative pl-6 sm:pl-8 group" data-aos="fade-up" data-aos-delay={index * 100}>
-                {/* Timeline Dot */}
-                <div className="absolute -left-[9px] top-2 w-4 h-4 rounded-full bg-slate-900 border-2 border-cyan-400 group-hover:scale-150 group-hover:bg-cyan-400 group-hover:shadow-lg group-hover:shadow-cyan-400/50 transition-all duration-300"></div>
-
-                {/* Period Stamp for desktop */}
-                <div className="hidden md:block absolute -left-40 top-1 text-sm font-mono font-bold text-slate-400 w-28 text-right group-hover:text-cyan-400 transition-colors">
-                  {item.period}
-                </div>
-
-                <div className="bg-slate-900/80 border border-slate-800 p-6 sm:p-8 rounded-2xl hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 hover:-translate-y-1">
-                  <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-bold block mb-2">
-                    {item.type} • <span className="inline md:hidden">{item.period}</span>
-                  </span>
-                  <h3 className="text-lg sm:text-xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">{item.title}</h3>
-                  <p className="text-slate-400 text-sm sm:text-base font-semibold mb-3">{item.institution}</p>
-                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. FEATURED PROJECTS */}
-      <section id="projects" className="relative z-10 py-20 sm:py-28 max-w-7xl mx-auto px-4 sm:px-8">
-        <div className="text-center mb-10 sm:mb-16" data-aos="fade-up">
-          <h2 className="text-3xl sm:text-5xl font-black text-white mb-4">Featured Projects</h2>
-          <p className="text-slate-400 text-base sm:text-lg mb-8">Kumpulan proyek unggulan yang pernah saya bangun.</p>
-
-          {/* Interactive Project Category Filter */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 ${
-                  selectedCategory === cat
-                    ? "bg-cyan-500 text-black shadow-lg shadow-cyan-500/20"
-                    : "bg-slate-800/80 text-slate-300 border border-slate-700 hover:border-cyan-500/40"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
-          {filteredProjects.map((proj, idx) => (
-            <div
-              key={idx}
-              data-aos="fade-up"
-              data-aos-delay={idx * 150}
-              className="group bg-slate-900/50 rounded-3xl border border-slate-800 overflow-hidden hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 transition-all duration-500 hover:-translate-y-3 flex flex-col justify-between"
-            >
-              <div>
-                {/* Visual Cover Banner Gradient */}
-                <div className={`relative h-48 sm:h-52 w-full bg-gradient-to-tr ${proj.gradient} p-6 sm:p-8 flex flex-col justify-between overflow-hidden group-hover:scale-105 transition-transform duration-500`}>
-                  <div className="flex justify-between items-center z-10">
-                    <span className="text-xs font-mono font-bold bg-black/50 text-slate-200 px-3 py-1 rounded-md backdrop-blur-md">
-                      Project #{idx + 1}
-                    </span>
-                    <svg className="w-5 h-5 text-slate-200 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </div>
-
-                  <div className="z-10">
-                    <p className="text-white font-extrabold text-lg sm:text-xl tracking-wide">{proj.title}</p>
-                  </div>
-
-                  <div className="absolute -right-8 -bottom-8 w-36 h-36 rounded-full bg-white/10 blur-xl group-hover:scale-150 transition-transform duration-700"></div>
-                </div>
-
-                {/* Project Info */}
-                <div className="p-6 sm:p-8 space-y-4">
-                  <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">{proj.category}</span>
-                  <p className="text-slate-300 text-sm sm:text-base leading-relaxed">{proj.description}</p>
-                </div>
-              </div>
-
-              <div className="p-6 sm:p-8 pt-0 space-y-6">
-                <div className="flex flex-wrap gap-2">
-                  {proj.tech.map((t, i) => (
-                    <span key={i} className="text-xs font-mono px-3 py-1 rounded-md bg-slate-800 text-slate-300 border border-slate-700">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                <a
-                  href={proj.link}
-                  className="inline-flex items-center gap-2 text-sm sm:text-base font-bold text-cyan-400 hover:text-cyan-300 transition-colors group/link"
-                >
-                  View Details
-                  <svg className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 7. INTERACTIVE CONTACT SECTION */}
-      <section id="contact" className="relative z-10 py-20 sm:py-28 border-t border-slate-800/80 bg-slate-900/30 px-4 sm:px-8">
-        <div className="max-w-3xl mx-auto space-y-8" data-aos="zoom-in">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl sm:text-5xl font-black text-white">Mari Bekerja Sama!</h2>
-            <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
-              Saya selalu terbuka untuk berdiskusi tentang peluang karir baru, proyek freelance, atau sekadar bertukar pikiran seputar pengembangan web.
+      {/* 3. ABOUT SECTION (MY PRINCIPALS & WORKFLOW) */}
+      <section id="about" className="max-w-6xl mx-auto px-4 sm:px-8 space-y-24 scroll-mt-28">
+        
+        {/* Part A: My Principals (Statement with Flanking Orbital Badges) */}
+        <div className="space-y-10 text-center" data-aos="fade-up">
+          <div className="space-y-2">
+            <h2 className="text-3xl sm:text-5xl font-black text-white tracking-tight font-heading">
+              {t.about.principalsTitle}
+            </h2>
+            <p className="text-xs sm:text-sm font-mono text-cyan-400 uppercase tracking-widest">
+              {t.about.principalsSubtitle}
             </p>
           </div>
 
-          {/* Form Kontak Interaktif */}
-          <form onSubmit={handleSubmit} className="bg-slate-900/80 border border-slate-800 p-6 sm:p-8 rounded-3xl space-y-5 text-left shadow-2xl">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-slate-300 uppercase">Nama Lengkap</label>
-                <input
-                  type="text"
-                  required
-                  placeholder="John Doe"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors text-sm"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-mono font-bold text-slate-300 uppercase">Email</label>
-                <input
-                  type="email"
-                  required
-                  placeholder="john@example.com"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors text-sm"
-                />
-              </div>
+          {/* Central Statement flanked with badges */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center pt-4">
+            
+            {/* Left Orbiting Badges */}
+            <div className="lg:col-span-3 flex flex-row lg:flex-col justify-center gap-3 order-2 lg:order-1 flex-wrap">
+              {t.about.orbitPills.left.map((pill, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full border text-xs sm:text-sm font-medium shadow-sm transition-all hover:scale-105 ${pill.bg}`}
+                >
+                  <span className="shrink-0">{renderOrbitIcon(pill.iconKey)}</span>
+                  <span>{pill.title}</span>
+                </div>
+              ))}
             </div>
 
-            <div className="space-y-2">
-              <label className="text-xs font-mono font-bold text-slate-300 uppercase">Pesan</label>
-              <textarea
-                required
-                rows={4}
-                placeholder="Halo Raka, saya berminat untuk bekerja sama..."
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors text-sm resize-none"
-              ></textarea>
+            {/* Center High-Impact Statement */}
+            <div className="lg:col-span-6 p-6 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800/80 shadow-xl backdrop-blur-md order-1 lg:order-2">
+              <p className="text-base sm:text-lg lg:text-xl text-slate-200 leading-relaxed font-medium">
+                "{t.about.statement}"
+              </p>
             </div>
 
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full py-4 rounded-xl bg-cyan-500 text-black font-extrabold text-base hover:bg-cyan-400 hover:shadow-xl hover:shadow-cyan-500/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? "Sending Message..." : "Kirim Pesan"}
-            </button>
+            {/* Right Orbiting Badges */}
+            <div className="lg:col-span-3 flex flex-row lg:flex-col justify-center gap-3 order-3 flex-wrap">
+              {t.about.orbitPills.right.map((pill, idx) => (
+                <div
+                  key={idx}
+                  className={`flex items-center gap-2.5 px-4 py-2.5 rounded-full border text-xs sm:text-sm font-medium shadow-sm transition-all hover:scale-105 ${pill.bg}`}
+                >
+                  <span className="shrink-0">{renderOrbitIcon(pill.iconKey)}</span>
+                  <span>{pill.title}</span>
+                </div>
+              ))}
+            </div>
 
-            {/* Notification Alert */}
-            {submitStatus === "success" && (
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-center font-semibold text-sm animate-fadeIn">
-                ✓ Pesan berhasil terkirim! Saya akan segera menghubungi Anda.
-              </div>
-            )}
-          </form>
-
-          <div className="pt-4 flex justify-center gap-4">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noreferrer"
-              className="px-6 py-3 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 font-bold text-sm hover:bg-slate-700 hover:border-cyan-500/50 transition-all hover:-translate-y-0.5 active:scale-95"
-            >
-              GitHub Profile
-            </a>
           </div>
         </div>
+
+        {/* Part B: Tech Stack & Tools (Official SVG Logos Grid) */}
+        <div className="text-center space-y-8" data-aos="fade-up">
+          <div className="space-y-2">
+            <h3 className="text-2xl sm:text-4xl font-black text-white tracking-tight font-heading">
+              {t.about.techTitle}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-400 max-w-xl mx-auto">
+              {t.about.techSubtitle}
+            </p>
+          </div>
+
+          {/* Centered Icons Cluster with Official SVG Logos */}
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4 max-w-3xl mx-auto pt-2">
+            {TECH_TOOLS.map((toolName) => (
+              <div
+                key={toolName}
+                className="group relative flex items-center gap-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/50 hover:bg-slate-800/90 transition-all duration-300 hover:scale-105 shadow-sm cursor-default"
+              >
+                <div className="shrink-0 transition-transform group-hover:scale-110">
+                  <TechIcon name={toolName} className="w-5 h-5" />
+                </div>
+                <span className="text-xs sm:text-sm font-mono text-slate-300 group-hover:text-white transition-colors">
+                  {toolName}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Part C: Prinsip Kerja Saya (3 Step Connected Process with Depth & Curves) */}
+        <div className="space-y-12" data-aos="fade-up">
+          <div className="text-center space-y-2">
+            <span className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-widest">
+              {t.about.processBadge}
+            </span>
+            <h3 className="text-3xl sm:text-4xl font-black text-white tracking-tight font-heading">
+              {t.about.processTitle}
+            </h3>
+            <p className="text-slate-400 text-sm sm:text-base max-w-lg mx-auto">
+              {t.about.processSubtitle}
+            </p>
+          </div>
+
+          {/* 3 Step Connected Process Cards with Visual Connector Lines */}
+          <div className="relative pt-4">
+            
+            {/* Connector Curve Path for Desktop (between cards) */}
+            <div className="hidden md:block absolute top-1/2 left-0 right-0 -translate-y-1/2 pointer-events-none z-0 px-24">
+              <svg className="w-full h-24 overflow-visible" viewBox="0 0 800 100" fill="none">
+                <path
+                  d="M 180 50 Q 280 10, 380 50"
+                  stroke="#06b6d4"
+                  strokeWidth="2"
+                  strokeOpacity="0.4"
+                  className="animate-connector"
+                />
+                <path
+                  d="M 440 50 Q 540 90, 640 50"
+                  stroke="#06b6d4"
+                  strokeWidth="2"
+                  strokeOpacity="0.4"
+                  className="animate-connector"
+                />
+              </svg>
+            </div>
+
+            {/* Cards Grid */}
+            <div className="relative grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 items-stretch z-10">
+              {t.about.steps.map((step, idx) => (
+                <div
+                  key={idx}
+                  className="relative p-8 rounded-3xl bg-[#0e131d]/90 backdrop-blur-xl border border-slate-800 hover:border-cyan-500/50 hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between shadow-2xl space-y-6 group"
+                >
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-800/80">
+                      <span className="text-4xl font-black text-cyan-400 font-mono tracking-tighter group-hover:scale-110 transition-transform">
+                        {step.number}
+                      </span>
+                      <span className="text-[11px] font-mono text-cyan-300 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                        {step.tag}
+                      </span>
+                    </div>
+
+                    <h4 className="text-xl font-bold text-white group-hover:text-cyan-300 transition-colors font-heading">
+                      {step.title}
+                    </h4>
+
+                    <p className="text-xs sm:text-sm text-slate-400 leading-relaxed font-normal">
+                      {step.desc}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-500">
+                    <span>Phase {step.number}</span>
+                    <span className="text-cyan-400 font-semibold flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                      Standard Process
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+        </div>
+
       </section>
 
-      {/* FOOTER */}
-      <footer className="relative z-10 py-10 border-t border-slate-800 text-center text-xs sm:text-sm font-medium text-slate-400">
-        <p>© {new Date().getFullYear()} Raka Febrian. Built with Next.js & Tailwind CSS.</p>
-      </footer>
+      {/* 4. PRESTASI & SERTIFIKASI SECTION */}
+      <PrestasiSection />
 
-      {/* CSS Animation Keyframes */}
-      <style jsx global>{`
-        @keyframes marquee {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        .animate-marquee {
-          display: flex;
-          width: max-content;
-          animation: marquee 25s linear infinite;
-        }
-        .animate-marquee:hover {
-          animation-play-state: paused;
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(-5px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fadeIn {
-          animation: fadeIn 0.3s ease-out forwards;
-        }
-      `}</style>
+      {/* 5. FEATURED PROJECTS SECTION */}
+      <section id="projects" className="max-w-7xl mx-auto px-4 sm:px-8 space-y-16 scroll-mt-28">
+        <div className="text-center space-y-4" data-aos="fade-up">
+          <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-semibold tracking-wide">
+            <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span>{t.projects.badge}</span>
+          </div>
+          <h2 className="text-4xl sm:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-slate-400 font-heading">
+            {t.projects.title}
+          </h2>
+          <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+            {t.projects.subtitle}
+          </p>
+        </div>
+
+        {/* Filters & Search */}
+        <div className="flex flex-col md:flex-row items-center justify-between gap-6" data-aos="fade-up">
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 sm:gap-3">
+            {categories.map((cat) => (
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all duration-300 cursor-pointer ${
+                  selectedCategory === cat.id
+                    ? "bg-cyan-500 text-slate-950 shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-105"
+                    : "bg-slate-900/60 text-slate-300 border border-slate-700 hover:border-cyan-500/50 hover:bg-slate-800"
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          <div className="w-full md:w-80 group">
+            <div className="relative">
+              <input
+                type="text"
+                placeholder={t.projects.searchPlaceholder}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-5 py-3 pl-12 rounded-2xl bg-slate-900/60 backdrop-blur-sm border border-slate-700 text-slate-100 placeholder-slate-500 text-xs sm:text-sm focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all shadow-inner"
+              />
+              <svg
+                className="w-5 h-5 text-slate-500 absolute left-4 top-3.5 group-focus-within:text-cyan-500 transition-colors"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        {/* 3D Project Cards Grid */}
+        {filteredProjects.length === 0 ? (
+          <div className="text-center py-24 bg-slate-900/40 rounded-[2rem] border border-slate-800 backdrop-blur-sm">
+            <svg className="w-12 h-12 text-slate-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <p className="text-xl font-bold text-slate-300 mb-2 font-heading">{t.projects.noResultsTitle}</p>
+            <p className="text-slate-500 text-sm">{t.projects.noResultsDesc}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10">
+            {filteredProjects.map((proj, idx) => (
+              <ProjectCard key={idx} proj={proj} idx={idx} />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* 6. PROFILE SPOTLIGHT SECTION: "MENGENAL SAYA LEBIH DEKAT" */}
+      <section id="who-i-am" className="max-w-6xl mx-auto px-4 sm:px-8 space-y-16 scroll-mt-28">
+        
+        {/* Section Header */}
+        <div className="text-center space-y-3" data-aos="fade-up">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-semibold tracking-wide font-mono">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>{t.profileSpotlight.badge}</span>
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black text-white font-heading">
+            {t.profileSpotlight.title}
+          </h2>
+          <p className="text-slate-400 text-sm sm:text-base max-w-xl mx-auto">
+            {t.profileSpotlight.subtitle}
+          </p>
+        </div>
+
+        {/* Tactile Split Card */}
+        <div
+          className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center bg-[#0d121c]/90 backdrop-blur-2xl p-8 sm:p-12 rounded-[2.5rem] border border-slate-800/90 shadow-2xl hover:border-cyan-500/30 transition-all duration-500 relative overflow-hidden"
+          data-aos="fade-up"
+        >
+          <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+
+          {/* Left Column: Portrait Photo Frame with Social Badges */}
+          <div className="lg:col-span-5 flex flex-col items-center lg:items-start space-y-6" data-aos="fade-right">
+            <div className="relative group">
+              <div className="relative w-64 sm:w-72 aspect-[4/5] rounded-3xl overflow-hidden bg-slate-950 p-2 border-2 border-slate-700/80 shadow-2xl shadow-cyan-950/40 group-hover:border-cyan-400/60 group-hover:-translate-y-1.5 transition-all duration-500">
+                <div className="relative w-full h-full rounded-2xl overflow-hidden">
+                  <Image
+                    src="/raka_profile.jpg"
+                    alt={t.profileSpotlight.name}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80" />
+                  
+                  <div className="absolute bottom-3 left-3 right-3 text-white">
+                    <p className="text-sm font-bold font-heading leading-tight">{t.profileSpotlight.name}</p>
+                    <p className="text-[11px] text-cyan-300 font-mono">{t.profileSpotlight.role}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="absolute -top-3 -right-3 px-3 py-1 rounded-full bg-cyan-500 text-black text-[11px] font-extrabold shadow-lg font-mono">
+                SIJA Student
+              </div>
+            </div>
+
+            <div className="w-full max-w-[288px] flex items-center justify-between pt-1 text-slate-400">
+              <div className="flex items-center gap-3">
+                {SOCIAL_LINKS.map((soc) => (
+                  <a
+                    key={soc.name}
+                    href={soc.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={soc.name}
+                    className="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-cyan-500 hover:text-cyan-400 hover:scale-110 transition-all cursor-pointer"
+                  >
+                    {soc.icon}
+                  </a>
+                ))}
+              </div>
+
+              <div className="text-right">
+                <span className="text-[11px] font-mono text-slate-500 font-semibold">
+                  SMK Telkom
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column: Personal Story & Focus Chips */}
+          <div className="lg:col-span-7 space-y-6 text-slate-300" data-aos="fade-left">
+            <div className="space-y-4">
+              <p className="text-base sm:text-lg leading-relaxed font-normal text-slate-200">
+                {t.profileSpotlight.p1}
+              </p>
+              <p className="text-sm sm:text-base leading-relaxed text-slate-400">
+                {t.profileSpotlight.p2}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+              {t.profileSpotlight.stats.map((stat, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800/90 hover:border-cyan-500/40 transition-all duration-300 space-y-1"
+                >
+                  <p className="text-[11px] font-mono text-cyan-400 font-bold uppercase tracking-wider">
+                    {stat.label}
+                  </p>
+                  <p className="text-sm font-bold text-white font-heading">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs text-slate-400 font-mono">
+                    {stat.desc}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="pt-2 flex flex-wrap items-center gap-3">
+              <button
+                type="button"
+                onClick={openCvModal}
+                className="px-6 py-3 rounded-full bg-cyan-500 text-black font-extrabold text-sm hover:bg-cyan-400 transition-all shadow-md shadow-cyan-500/20 active:scale-95 cursor-pointer flex items-center gap-2"
+              >
+                <span>{t.nav.viewCv}</span>
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => scrollTo("contact")}
+                className="px-6 py-3 rounded-full bg-slate-900 border border-slate-800 text-slate-300 font-semibold text-sm hover:text-white hover:border-slate-700 transition-all active:scale-95 cursor-pointer"
+              >
+                {t.contact.badge}
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* 7. CONTACT SECTION: HIGH-IMPACT COLLABORATION CANVAS (MATCHING REQUESTED CONCEPT) */}
+      <section id="contact" className="max-w-5xl mx-auto px-4 sm:px-8 space-y-12 scroll-mt-28 relative">
+        
+        {/* Ambient Radial Mesh Glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-cyan-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
+        {/* Big Bold Headline & Narrative */}
+        <div className="text-center space-y-4" data-aos="fade-up">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-semibold tracking-wide font-mono">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+            <span>{t.contact.badge}</span>
+          </div>
+
+          <h2 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-[1.15] font-heading max-w-3xl mx-auto">
+            {t.contact.heroTitle}
+          </h2>
+
+          <p className="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed font-normal">
+            {t.contact.heroSubtitle}
+          </p>
+        </div>
+
+        {/* Action Buttons Bar */}
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2" data-aos="fade-up" data-aos-delay="100">
+          
+          {/* Primary Action: Mailto */}
+          <a
+            href="mailto:raka.febrian@example.com"
+            className="inline-flex items-center gap-2.5 px-8 py-4 rounded-full bg-[#0d121c] hover:bg-black text-white font-extrabold text-sm sm:text-base border border-slate-700/80 shadow-xl hover:border-cyan-500/60 hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer group"
+          >
+            <span className="text-cyan-400 group-hover:translate-x-1 transition-transform">→</span>
+            <span>{t.contact.emailCta}</span>
+          </a>
+
+          {/* Salin Email Clipboard Button */}
+          <button
+            type="button"
+            onClick={handleCopyEmail}
+            className="inline-flex items-center gap-2 px-6 py-4 rounded-full bg-slate-900/90 hover:bg-slate-800 text-slate-300 hover:text-white font-bold text-sm sm:text-base border border-slate-800 hover:border-slate-700 transition-all active:scale-95 cursor-pointer"
+          >
+            <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+            <span>{copiedEmail ? t.contact.copiedEmail : t.contact.copyEmail}</span>
+          </button>
+
+          {/* Direct Message Form Toggle */}
+          <button
+            type="button"
+            onClick={() => setIsContactFormOpen(!isContactFormOpen)}
+            className="inline-flex items-center gap-2 px-6 py-4 rounded-full bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 font-bold text-sm sm:text-base border border-cyan-500/30 transition-all active:scale-95 cursor-pointer"
+          >
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            <span>{isContactFormOpen ? t.contact.closeFormCta : t.contact.openFormCta}</span>
+          </button>
+
+        </div>
+
+        {/* Live Local Time Widget */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 text-xs sm:text-sm font-mono text-slate-400 pt-2" data-aos="fade-up">
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-900/80 border border-slate-800">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>{t.contact.localTimeLabel}:</span>
+            <span className="text-slate-100 font-bold tracking-wider">{localTime || "..."}</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-400">{t.contact.locationTag}</span>
+          </div>
+        </div>
+
+        {/* Social Rounded Glass Icons */}
+        <div className="flex items-center justify-center gap-3 pt-1" data-aos="fade-up">
+          {SOCIAL_LINKS.map((soc) => (
+            <a
+              key={soc.name}
+              href={soc.href}
+              target="_blank"
+              rel="noreferrer"
+              title={soc.name}
+              className="p-3 rounded-2xl bg-slate-900/90 border border-slate-800 text-slate-300 hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-slate-800 hover:scale-110 transition-all duration-300 shadow-md cursor-pointer"
+            >
+              {soc.icon}
+            </a>
+          ))}
+        </div>
+
+        {/* Expandable Supabase Direct Message Form */}
+        {isContactFormOpen && (
+          <div className="w-full max-w-2xl mx-auto pt-6 animate-fadeIn" data-aos="fade-up">
+            <form
+              onSubmit={handleSubmit}
+              className="p-8 sm:p-10 rounded-3xl bg-slate-900/90 backdrop-blur-2xl border border-slate-800 text-left space-y-6 shadow-2xl"
+            >
+              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+                <h3 className="text-xl font-bold text-white font-heading">{t.contact.formTitle}</h3>
+                <span className="text-xs font-mono text-cyan-400">Supabase Connected</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="space-y-2">
+                  <label className="text-xs font-mono font-bold text-slate-300 uppercase">{t.contact.nameLabel}</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder={t.contact.namePlaceholder}
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors text-sm"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-mono font-bold text-slate-300 uppercase">{t.contact.emailInputLabel}</label>
+                  <input
+                    type="email"
+                    required
+                    placeholder={t.contact.emailPlaceholder}
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors text-sm"
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-xs font-mono font-bold text-slate-300 uppercase">{t.contact.messageLabel}</label>
+                <textarea
+                  required
+                  rows={4}
+                  placeholder={t.contact.messagePlaceholder}
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  className="w-full px-4 py-3.5 rounded-xl bg-slate-950 border border-slate-800 text-slate-100 placeholder-slate-600 focus:outline-none focus:border-cyan-500 transition-colors text-sm resize-none"
+                ></textarea>
+              </div>
+
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold text-base hover:shadow-xl hover:shadow-cyan-500/30 hover:brightness-110 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+              >
+                {isSubmitting ? t.contact.sendingButton : t.contact.sendButton}
+              </button>
+
+              {submitStatus === "success" && (
+                <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-center font-semibold text-sm animate-fadeIn">
+                  {t.contact.successMessage}
+                </div>
+              )}
+
+              {submitStatus === "error" && (
+                <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-center font-semibold text-sm animate-fadeIn">
+                  {t.contact.errorMessage}
+                </div>
+              )}
+            </form>
+          </div>
+        )}
+
+      </section>
+
     </div>
   );
 }
