@@ -1,194 +1,217 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About | Raka Febrian",
-  description: "Tentang Raka Febrian, Front-End Developer & UI/UX enthusiast dari Sidoarjo, Indonesia.",
+  title: "About | Raka Febrian — Software Developer",
+  description: "Tentang Raka Febrian, Software Developer & Tech Enthusiast dari SIJA SMK Telkom Sidoarjo.",
 };
 
 const SKILLS = [
-  "HTML5",
-  "CSS3",
-  "JavaScript (ES6+)",
   "TypeScript",
+  "JavaScript",
   "React.js",
   "Next.js",
-  "Vue.js",
-  "Tailwind CSS",
+  "Node.js",
   "PHP",
   "Laravel",
   "MySQL",
+  "PostgreSQL",
   "Supabase",
+  "Tailwind CSS",
   "Figma",
   "Git & GitHub",
-  "Vercel",
 ];
 
 const INTERESTS = [
-  {
-    title: "Front-End Development",
-    desc: "Membangun web app modern dengan React, Next.js, dan Tailwind CSS yang teroptimasi performanya.",
-    tag: "Frontend",
-  },
-  {
-    title: "UI/UX Design & Prototyping",
-    desc: "Merancang wireframe, user flow, dan desain antarmuka bernuansa modern dan rapi di Figma.",
-    tag: "Design",
-  },
-  {
-    title: "Full-Stack Integration",
-    desc: "Menghubungkan antarmuka ke backend dan database serverless seperti Supabase, Laravel, dan REST API.",
-    tag: "Fullstack",
-  },
-  {
-    title: "Interactive Micro-Interactions",
-    desc: "Menambahkan animasi halus, efek hover, dan transisi visual yang membuat web terasa hidup.",
-    tag: "Motion",
-  },
+  "Full-Stack Web Development",
+  "Software Engineering",
+  "UI/UX & Product Design",
+  "Cloud & AI Technologies",
 ];
 
 export default function AboutPage() {
   return (
-    <div className="py-12 sm:py-20 px-4 sm:px-8 max-w-6xl mx-auto space-y-20">
-      
-      {/* 1. HERO SECTION */}
-      <section className="grid items-center gap-12 lg:grid-cols-[1.2fr_.8fr]">
-        <div data-aos="fade-right" className="space-y-6">
-          <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-mono font-semibold tracking-wide">
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
-            <span>01 / ABOUT ME</span>
-          </div>
+    <main className="relative min-h-screen overflow-hidden bg-[#0A0A0C] text-[#F8FAFC]">
+      <div className="relative z-10 mx-auto max-w-6xl px-5 pb-24 pt-16 sm:px-8 sm:pt-24">
 
-          <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-[1.05]">
-            Designing and building{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">
-              digital experiences.
-            </span>
-          </h1>
-
-          <p className="text-slate-300 text-base sm:text-lg leading-relaxed font-normal">
-            Halo! Saya <strong>Raka Febrian</strong>, siswa jurusan <strong>SIJA</strong> (Sistem Informasi, Jaringan, dan Aplikasi) di <strong>SMK Telkom Sidoarjo</strong>. Saya memiliki minat mendalam pada <strong>Front-End Development</strong> dan <strong>UI/UX Design</strong>.
-          </p>
-
-          <p className="text-slate-400 text-sm sm:text-base leading-relaxed">
-            Bagi saya, website yang baik bukan hanya tentang estetika visual yang memanjakan mata, tetapi juga tentang bagaimana kode di baliknya tersusun rapi, cepat diakses, dan memberikan kenyamanan nyata bagi penggunanya.
-          </p>
-
-          <div className="flex flex-wrap gap-4 pt-2">
-            <Link
-              href="/#projects"
-              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 hover:-translate-y-0.5 transition-all"
-            >
-              <span>Lihat Hasil Project</span>
-              <span>→</span>
-            </Link>
-
-            <Link
-              href="/#contact"
-              className="px-6 py-3.5 rounded-xl bg-slate-900/90 border border-slate-700 hover:border-slate-500 text-slate-200 font-semibold text-sm hover:bg-slate-800 transition-all"
-            >
-              Hubungi Saya
-            </Link>
-          </div>
-        </div>
-
-        {/* Profile Card Frame */}
-        <div data-aos="fade-left" data-aos-delay="150" className="relative mx-auto w-full max-w-[340px] lg:ml-auto">
-          <div className="relative aspect-[4/5] rounded-3xl border border-slate-700/70 bg-[#0d131c]/90 p-5 shadow-2xl backdrop-blur-xl flex flex-col justify-between overflow-hidden group">
-            {/* Ambient Background Glow inside card */}
-            <div className="absolute -right-12 -top-12 w-40 h-40 rounded-full bg-cyan-500/15 blur-2xl group-hover:scale-125 transition-transform duration-700" />
-            
-            <div className="flex items-center justify-between text-xs font-mono text-slate-500">
-              <span>PORTRAIT</span>
-              <span className="text-cyan-400 font-semibold">RF / 2026</span>
+        {/* HERO */}
+        <section className="grid items-center gap-14 lg:grid-cols-[1.25fr_.75fr]">
+          <div data-aos="fade-up">
+            <div className="mb-6 flex items-center gap-3 text-xs font-mono uppercase tracking-[0.25em] text-amber-400">
+              <span className="h-px w-8 bg-amber-400" />
+              About me
             </div>
 
-            <div className="my-auto py-8 text-center space-y-4">
-              <div className="mx-auto w-24 h-24 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-blue-600/20 border border-cyan-500/30 flex items-center justify-center text-3xl font-black text-white shadow-inner group-hover:scale-105 transition-transform">
-                RF
-              </div>
-              <div>
-                <p className="text-xl font-bold text-white tracking-wide">Raka Febrian</p>
-                <p className="text-xs font-mono text-cyan-400 mt-1 uppercase tracking-wider">
-                  Front-End / UI UX Enthusiast
-                </p>
-              </div>
-            </div>
+            <h1 className="max-w-3xl text-4xl sm:text-6xl lg:text-7xl font-sans font-bold leading-[1.05] tracking-tight text-white">
+              Engineering
+              <br />
+              <span className="text-slate-400 italic font-medium">and crafting</span>
+              <br />
+              digital solutions.
+            </h1>
 
-            <div className="pt-4 border-t border-slate-800 flex items-center justify-between text-[11px] font-mono text-slate-400">
-              <span>Sidoarjo, Indonesia</span>
-              <span className="flex items-center gap-1.5 text-emerald-400">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                Available
-              </span>
-            </div>
-          </div>
-        </div>
-      </section>
+            <p className="mt-8 max-w-xl text-base leading-8 text-slate-400 sm:text-lg font-sans font-normal">
+              Saya Raka Febrian, siswa SIJA di SMK Telkom Sidoarjo dengan
+              passion mendalam pada Software Engineering, Full-Stack Web Development,
+              dan UI/UX Design. Saya suka merancang dan membangun sistem digital
+              yang terstruktur rapi, efisien, dan memberikan solusi nyata.
+            </p>
 
-      {/* 2. BENTO DETAILS & STORY */}
-      <section className="space-y-12">
-        <div className="border-t border-slate-800/80 pt-16" data-aos="fade-up">
-          <div className="grid gap-8 lg:grid-cols-[.8fr_1.2fr]">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-400 font-bold">
-                02 / BACKGROUND
-              </p>
-              <h2 className="mt-3 text-3xl font-bold text-white tracking-tight sm:text-4xl">
-                Bagaimana Saya Memulai
-              </h2>
-            </div>
-
-            <div className="space-y-5 text-sm sm:text-base leading-relaxed text-slate-300">
-              <p>
-                Ketertarikan saya pada dunia pemrograman web berawal dari rasa penasaran tentang bagaimana ide visual dan interaksi digital diwujudkan menjadi website yang dapat digunakan ribuan orang.
-              </p>
-              <p>
-                Melalui kurikulum kejuruan <strong>SIJA di SMK Telkom Sidoarjo</strong> serta eksplorasi mandiri, saya mendalami fundamental pemrograman mulai dari <strong>HTML, CSS, JavaScript, PHP, dan MySQL</strong>, hingga ekosistem modern seperti <strong>React, Next.js, Tailwind CSS, dan Supabase</strong>.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 3. FOCUS AREAS */}
-        <div className="space-y-6 pt-6" data-aos="fade-up">
-          <div className="flex items-end justify-between">
-            <div>
-              <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-400 font-bold">
-                03 / SPECIALIZATION
-              </p>
-              <h2 className="mt-2 text-2xl sm:text-3xl font-bold text-white">
-                Fokus Keahlian
-              </h2>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {INTERESTS.map((item, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800/80 hover:border-cyan-500/40 transition-all duration-300 hover:-translate-y-1 space-y-3"
+            <div className="mt-9 flex flex-wrap gap-3.5">
+              <Link
+                href="/#projects"
+                className="group inline-flex items-center gap-3 rounded-xl bg-amber-500 hover:bg-amber-400 px-6 py-3 text-sm font-sans font-bold text-[#0A0A0C] transition-all duration-300 hover:shadow-lg hover:shadow-amber-500/20 active:scale-95 shadow-sm"
               >
-                <div className="flex items-center justify-between text-xs font-mono">
-                  <span className="text-cyan-400 font-bold uppercase">{item.tag}</span>
-                  <span className="text-slate-600">0{idx + 1}</span>
+                Lihat project
+                <span className="transition-transform duration-300 group-hover:translate-x-1">
+                  →
+                </span>
+              </Link>
+
+              <Link
+                href="/#contact"
+                className="inline-flex items-center rounded-xl border border-white/10 bg-white/[0.04] hover:bg-white/[0.08] px-6 py-3 text-sm font-sans font-medium text-white transition-all duration-300 hover:border-amber-400/50"
+              >
+                Hubungi saya
+              </Link>
+            </div>
+          </div>
+
+          {/* PROFILE VISUAL */}
+          <div
+            className="relative mx-auto w-full max-w-[330px] lg:mx-0 lg:ml-auto"
+            data-aos="fade-left"
+            data-aos-delay="120"
+          >
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl shadow-2xl p-4">
+              <div className="absolute right-5 top-5 font-mono text-[10px] tracking-[0.25em] text-amber-400">
+                01 / ABOUT
+              </div>
+
+              <div className="relative h-full flex flex-col items-center justify-center text-center p-4">
+                <div className="relative w-24 h-24 mb-4 rounded-2xl overflow-hidden border border-white/10 bg-white/[0.04] p-3">
+                  <Image
+                    src="/rf-logo.png"
+                    alt="Raka Febrian Logo"
+                    fill
+                    className="object-contain p-2"
+                    sizes="96px"
+                  />
                 </div>
-                <h3 className="text-lg font-bold text-white">{item.title}</h3>
-                <p className="text-xs sm:text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+
+                <p className="text-xl font-sans font-bold text-white">
+                  Raka Febrian
+                </p>
+
+                <p className="mt-1 text-xs uppercase tracking-[0.2em] text-amber-400 font-mono font-semibold">
+                  Software & UI Engineer
+                </p>
+
+                <div className="mt-8 pt-4 w-full flex items-center justify-between border-t border-white/[0.08] text-[11px] font-mono text-slate-400">
+                  <span>Sidoarjo, ID</span>
+                  <span className="flex items-center gap-1.5 text-white">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Available
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* DIVIDER */}
+        <div className="my-20 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+
+        {/* STORY */}
+        <section
+          className="grid gap-12 lg:grid-cols-[.7fr_1.3fr]"
+          data-aos="fade-up"
+        >
+          <div>
+            <p className="font-mono text-xs uppercase tracking-[0.25em] text-amber-400">
+              02 / My story
+            </p>
+
+            <h2 className="mt-4 text-3xl sm:text-4xl font-sans font-bold tracking-tight text-white">
+              Bukan cuma membuat website terlihat bagus.
+            </h2>
+          </div>
+
+          <div className="space-y-6 text-sm sm:text-base leading-8 text-slate-400 font-sans font-normal">
+            <p>
+              Ketertarikan saya pada web development berawal dari rasa ingin
+              tahu bagaimana sebuah desain bisa berubah menjadi sesuatu yang
+              benar-benar dapat digunakan.
+            </p>
+
+            <p>
+              Dari sana saya mulai mempelajari HTML, CSS, JavaScript, PHP,
+              database, hingga framework dan tools yang membantu proses
+              pengembangan website.
+            </p>
+
+            <p>
+              Saya juga tertarik pada UI/UX karena menurut saya tampilan dan
+              fungsi tidak bisa dipisahkan. Website yang baik bukan hanya
+              menarik ketika pertama kali dilihat, tetapi juga terasa mudah
+              ketika digunakan.
+            </p>
+          </div>
+        </section>
+
+        {/* CURRENT FOCUS */}
+        <section className="mt-20" data-aos="fade-up">
+          <div className="mb-10 flex items-end justify-between gap-5">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.25em] text-amber-400">
+                03 / Currently
+              </p>
+
+              <h2 className="mt-3 text-3xl sm:text-4xl font-sans font-bold tracking-tight text-white">
+                What I&apos;m into
+              </h2>
+            </div>
+
+            <span className="hidden font-mono text-xs text-slate-400 sm:block">
+              2026
+            </span>
+          </div>
+
+          <div className="grid gap-4 md:grid-cols-2">
+            {INTERESTS.map((item, index) => (
+              <div
+                key={item}
+                className="group relative bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] p-7 sm:p-8 rounded-3xl transition-all duration-300 hover:border-white/20 hover:bg-white/[0.06]"
+              >
+                <div className="mb-8 flex items-center justify-between">
+                  <span className="font-mono text-xs font-bold text-amber-400">
+                    0{index + 1}
+                  </span>
+
+                  <span className="text-slate-400 transition-all duration-300 group-hover:translate-x-1 group-hover:text-amber-400">
+                    ↗
+                  </span>
+                </div>
+
+                <h3 className="text-xl font-sans font-bold text-white transition-colors group-hover:text-amber-400">
+                  {item}
+                </h3>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* 4. TECH TOOLKIT */}
-        <div className="space-y-6 pt-6" data-aos="fade-up">
-          <div>
-            <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-400 font-bold">
-              04 / TOOLKIT
+        {/* SKILLS */}
+        <section className="mt-20" data-aos="fade-up">
+          <div className="mb-10">
+            <p className="font-mono text-xs uppercase tracking-[0.25em] text-amber-400">
+              04 / Toolkit
             </p>
-            <h2 className="mt-2 text-2xl sm:text-3xl font-bold text-white">
-              Teknologi yang Biasa Digunakan
+
+            <h2 className="mt-3 text-3xl sm:text-4xl font-sans font-bold tracking-tight text-white">
+              Tools I use
             </h2>
           </div>
 
@@ -196,42 +219,88 @@ export default function AboutPage() {
             {SKILLS.map((skill, index) => (
               <div
                 key={skill}
-                className="flex items-center gap-2.5 px-4 py-2 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-cyan-500/40 text-slate-300 hover:text-white transition-all text-xs sm:text-sm font-mono"
+                className="group flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2.5 transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400/50 hover:bg-white/[0.06]"
               >
-                <span className="text-[10px] text-slate-500 font-bold">{String(index + 1).padStart(2, "0")}</span>
-                <span>{skill}</span>
+                <span className="font-mono text-[10px] text-amber-400 font-bold">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+
+                <span className="text-sm font-sans font-medium text-white transition-colors group-hover:text-amber-300">
+                  {skill}
+                </span>
               </div>
             ))}
           </div>
-        </div>
+        </section>
 
-        {/* 5. APPROACH & VALUES */}
-        <div
-          className="p-8 sm:p-10 rounded-3xl bg-slate-900/60 border border-slate-800 space-y-6"
+        {/* PRINCIPLE */}
+        <section
+          className="relative mt-20 overflow-hidden rounded-3xl border border-white/10 bg-white/[0.03] backdrop-blur-xl p-8 sm:p-12 shadow-2xl"
           data-aos="fade-up"
         >
-          <p className="font-mono text-xs uppercase tracking-[0.25em] text-cyan-400 font-bold">
-            05 / DESIGN & CODE APPROACH
-          </p>
+          <div className="relative grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.25em] text-amber-400">
+                05 / Approach
+              </p>
 
-          <h3 className="text-2xl sm:text-3xl font-bold text-white">
-            Simple Interfaces, Thoughtful Details.
-          </h3>
+              <h2 className="mt-4 max-w-sm text-3xl font-sans font-bold leading-tight tracking-tight text-white">
+                Simple interfaces. Thoughtful details.
+              </h2>
+            </div>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-3xl">
-            Saya percaya bahwa interface yang berkualitas tercipta dari keseimbangan antara tampilan visual yang bersih dan fungsionalitas yang mulus. Setiap detail seperti warna, tipografi, spacing, dan respon animasi harus memiliki tujuan yang jelas untuk membantu pengalaman pengguna.
-          </p>
+            <div className="space-y-5 text-sm sm:text-base leading-8 text-slate-400 font-sans font-normal">
+              <p>
+                Saya lebih memilih desain yang memiliki alasan daripada
+                sekadar menambahkan elemen agar terlihat ramai.
+              </p>
 
-          <div className="flex flex-wrap gap-2 pt-2">
-            {["Clean Structure", "Responsive Design", "Fast Loading", "Interactive UI"].map((trait) => (
-              <span key={trait} className="px-3.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-mono">
-                {trait}
-              </span>
-            ))}
+              <p>
+                Setiap spacing, warna, typography, interaction, dan animasi
+                seharusnya membantu pengguna memahami sebuah interface.
+              </p>
+
+              <div className="flex flex-wrap gap-2 pt-3">
+                <span className="rounded-full bg-white/[0.04] border border-white/10 px-4 py-1.5 text-xs text-white font-mono">
+                  Clean UI
+                </span>
+                <span className="rounded-full bg-white/[0.04] border border-white/10 px-4 py-1.5 text-xs text-white font-mono">
+                  Responsive
+                </span>
+                <span className="rounded-full bg-white/[0.04] border border-white/10 px-4 py-1.5 text-xs text-white font-mono">
+                  Accessible (WCAG AAA)
+                </span>
+                <span className="rounded-full bg-white/[0.04] border border-white/10 px-4 py-1.5 text-xs text-white font-mono">
+                  WebGL 3D Ready
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-    </div>
+        {/* CTA */}
+        <section className="py-24 text-center" data-aos="fade-up">
+          <p className="font-mono text-xs uppercase tracking-[0.25em] text-amber-400">
+            Have a project?
+          </p>
+
+          <h2 className="mx-auto mt-4 max-w-3xl text-3xl sm:text-5xl font-sans font-bold tracking-tight text-white">
+            Let&apos;s make something
+            <span className="text-amber-400 italic font-semibold"> useful.</span>
+          </h2>
+
+          <Link
+            href="/#contact"
+            className="group mt-8 inline-flex items-center gap-3 rounded-full bg-amber-500 hover:bg-amber-400 px-8 py-4 text-sm font-sans font-bold text-[#0A0A0C] transition-all duration-300 hover:scale-[1.02] shadow-xl shadow-amber-500/25 active:scale-95"
+          >
+            Start a conversation
+            <span className="transition-transform duration-300 group-hover:translate-x-1">
+              →
+            </span>
+          </Link>
+        </section>
+
+      </div>
+    </main>
   );
 }

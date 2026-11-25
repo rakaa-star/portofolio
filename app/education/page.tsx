@@ -4,51 +4,51 @@ import { Metadata } from "next";
 import { EDUCATION_TIMELINE } from "@/lib/data";
 
 export const metadata: Metadata = {
-  title: "Education & Achievements | Raka Febrian",
-  description: "Latar belakang pendidikan, sertifikasi keahlian, dan penghargaan yang diraih oleh Raka Febrian.",
+  title: "Education & Certifications | Raka Febrian",
+  description: "Latar belakang pendidikan formal, sertifikasi keahlian, dan validasi kompetensi Raka Febrian.",
 };
 
 const CERTIFICATES = [
   {
-    title: "Frontend Developer Expert",
+    title: "Full-Stack Web & Software Engineering",
     issuer: "Dicoding Academy",
-    date: "2023",
-    skills: ["PWA", "Web Performance", "Clean Code", "Testing"],
+    date: "2024",
+    skills: ["REST API", "Database Design", "Clean Architecture", "Testing"],
   },
   {
-    title: "React & Next.js Architecture Specialist",
-    issuer: "Coursera / Meta",
-    date: "2023",
-    skills: ["React Server Components", "State Management", "SSR & SSG"],
+    title: "Azure AI Fundamentals (AI-900) Certification",
+    issuer: "Microsoft x KOMDIGI",
+    date: "2025",
+    skills: ["Cloud Concepts", "Machine Learning", "Computer Vision", "NLP"],
   },
   {
-    title: "Advanced JavaScript & TypeScript Mastery",
-    issuer: "Udemy",
-    date: "2022",
-    skills: ["Asynchronous JS", "Generics", "Type Safety", "Design Patterns"],
+    title: "Advanced JavaScript & TypeScript Architecture",
+    issuer: "Meta / Coursera",
+    date: "2023",
+    skills: ["State Management", "Type Safety", "Full-Stack React", "Design Patterns"],
   },
 ];
 
 export default function EducationPage() {
   return (
-    <div className="py-12 sm:py-20 px-4 sm:px-8 max-w-5xl mx-auto space-y-20">
+    <div className="py-16 sm:py-24 px-5 sm:px-8 max-w-5xl mx-auto space-y-20 bg-[#0A0A0C] text-[#F8FAFC]">
       
       {/* 1. HEADER */}
       <div className="text-center space-y-4" data-aos="fade-up">
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs sm:text-sm font-semibold">
-          <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
-          </svg>
-          <span>Pendidikan & Prestasi</span>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/10 text-amber-400 text-xs font-mono tracking-widest uppercase">
+          <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <span>Academic Background</span>
         </div>
-        <h1 className="text-4xl sm:text-6xl font-black text-white">Edukasi & Pencapaian</h1>
-        <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
-          Fondasi akademis, sertifikasi profesional, dan pencapaian kompetisi yang telah saya lalui.
+        <h1 className="font-sans text-4xl sm:text-6xl font-bold text-white tracking-tight">
+          Edukasi & Fondasi Teknis
+        </h1>
+        <p className="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto font-sans leading-relaxed">
+          Fondasi kejuruan di SMK Telkom Sidoarjo, sertifikasi industri berstandar global, dan rekam jejak inovasi berkelanjutan.
         </p>
       </div>
 
       {/* 2. TIMELINE */}
-      <section className="relative border-l-2 border-slate-800 ml-4 md:ml-36 space-y-8 sm:space-y-12">
+      <section className="relative border-l border-white/15 ml-4 md:ml-36 space-y-8 sm:space-y-12">
         {EDUCATION_TIMELINE.map((item, index) => (
           <div
             key={index}
@@ -57,24 +57,28 @@ export default function EducationPage() {
             data-aos-delay={index * 100}
           >
             {/* Timeline Dot */}
-            <div className="absolute -left-[9px] top-2 w-4 h-4 rounded-full bg-slate-900 border-2 border-cyan-400 group-hover:scale-150 group-hover:bg-cyan-400 group-hover:shadow-lg group-hover:shadow-cyan-400/50 transition-all duration-300"></div>
+            <div className="absolute -left-[7px] top-3 w-3.5 h-3.5 rounded-full bg-[#0A0A0C] border-2 border-amber-400 group-hover:scale-125 group-hover:bg-amber-400 transition-all duration-300 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
 
             {/* Period Stamp for desktop */}
-            <div className="hidden md:block absolute -left-40 top-1 text-sm font-mono font-bold text-slate-400 w-28 text-right group-hover:text-cyan-400 transition-colors">
+            <div className="hidden md:block absolute -left-40 top-2 text-xs font-mono tracking-wider uppercase text-slate-400 w-28 text-right group-hover:text-amber-400 transition-colors">
               {item.period}
             </div>
 
-            <div className="bg-slate-900/80 border border-slate-800 p-6 sm:p-8 rounded-2xl hover:border-cyan-500/40 hover:shadow-xl hover:shadow-cyan-500/5 transition-all duration-300 hover:-translate-y-1">
-              <span className="text-xs font-mono text-cyan-400 uppercase tracking-widest font-bold block mb-2">
-                {item.type} • <span className="inline md:hidden">{item.period}</span>
-              </span>
-              <h2 className="text-lg sm:text-xl font-bold text-white mb-1 group-hover:text-cyan-300 transition-colors">
+            <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 p-6 sm:p-8 rounded-3xl hover:border-white/20 transition-all duration-300 shadow-xl">
+              <div className="flex items-center gap-2 mb-2">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-amber-400 font-bold px-2.5 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+                  {item.type}
+                </span>
+                <span className="text-slate-600 text-xs md:hidden">•</span>
+                <span className="text-xs font-mono text-slate-400 md:hidden">{item.period}</span>
+              </div>
+              <h2 className="font-sans text-xl sm:text-2xl text-white mb-1 group-hover:text-amber-400 transition-colors font-bold">
                 {item.title}
               </h2>
-              <p className="text-slate-400 text-sm sm:text-base font-semibold mb-3">
+              <p className="text-amber-400 text-sm font-sans mb-3 font-medium">
                 {item.institution}
               </p>
-              <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+              <p className="text-slate-400 text-sm sm:text-base leading-relaxed font-sans font-normal">
                 {item.description}
               </p>
             </div>
@@ -84,30 +88,32 @@ export default function EducationPage() {
 
       {/* 3. CERTIFICATIONS GRID */}
       <section className="space-y-8" data-aos="fade-up">
-        <div className="text-center sm:text-left space-y-2">
-          <h2 className="text-2xl sm:text-3xl font-bold text-white">Sertifikasi & Lisensi</h2>
-          <p className="text-slate-400 text-sm">Validasi kompetensi teknis dari platform terkemuka.</p>
+        <div className="text-center sm:text-left space-y-2 border-b border-white/10 pb-4">
+          <h2 className="font-sans text-2xl sm:text-3xl font-bold text-white">
+            Sertifikasi & Lisensi Resmi
+          </h2>
+          <p className="text-slate-400 text-sm font-sans">Validasi keahlian teknis dan standar industri.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {CERTIFICATES.map((cert, idx) => (
             <div
               key={idx}
-              className="p-6 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/40 transition-all duration-300 hover:-translate-y-1 space-y-4 flex flex-col justify-between"
+              className="p-6 rounded-3xl bg-white/[0.03] backdrop-blur-xl border border-white/10 hover:border-white/20 transition-all duration-300 space-y-4 flex flex-col justify-between shadow-xl"
             >
               <div className="space-y-2">
-                <div className="flex justify-between items-center text-xs font-mono text-cyan-400">
-                  <span>{cert.issuer}</span>
-                  <span>{cert.date}</span>
+                <div className="flex justify-between items-center text-xs font-mono text-amber-400">
+                  <span className="font-bold">{cert.issuer}</span>
+                  <span className="text-slate-400">{cert.date}</span>
                 </div>
-                <h3 className="text-lg font-bold text-white">{cert.title}</h3>
+                <h3 className="font-sans text-lg text-white font-bold leading-snug">{cert.title}</h3>
               </div>
 
-              <div className="flex flex-wrap gap-1.5 pt-3 border-t border-slate-800/80">
+              <div className="flex flex-wrap gap-1.5 pt-4 border-t border-white/[0.08]">
                 {cert.skills.map((s, i) => (
                   <span
                     key={i}
-                    className="text-[11px] font-mono px-2.5 py-1 rounded-md bg-slate-800 text-slate-300"
+                    className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-white/[0.04] border border-white/10 text-slate-300"
                   >
                     {s}
                   </span>
@@ -121,10 +127,11 @@ export default function EducationPage() {
       {/* 4. CTA */}
       <div className="text-center pt-6" data-aos="fade-up">
         <Link
-          href="/#projects"
-          className="inline-block px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold text-sm shadow-lg shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all hover:-translate-y-0.5"
+          href="/projects"
+          className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-amber-500 hover:bg-amber-400 text-[#0A0A0C] font-sans font-bold text-sm transition-all hover:scale-[1.02] shadow-lg shadow-amber-500/20"
         >
-          Lihat Implementasi Proyek Nyata
+          <span>Eksplorasi Proyek Nyata</span>
+          <span>→</span>
         </Link>
       </div>
 

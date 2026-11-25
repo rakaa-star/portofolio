@@ -57,6 +57,63 @@ export function TechIcon({ name, className = "w-5 h-5" }: { name: string; classN
         </svg>
       );
     case "vue.js":
+    case "node.js":
+    case "node":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M12 2L3.5 7V17L12 22L20.5 17V7L12 2Z" fill="#339933" />
+          <path d="M12 4.5L18.5 8.2V15.8L12 19.5L5.5 15.8V8.2L12 4.5Z" fill="#222" />
+          <path d="M12 7L16 9.3V14.7L12 17L8 14.7V9.3L12 7Z" fill="#68A063" />
+        </svg>
+      );
+    case "postgresql":
+    case "postgres":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17.5 22 22 17.5 22 12C22 6.5 17.5 2 12 2Z" fill="#336791" />
+          <path d="M16 11.5C15.5 9 13.5 7.5 11 7.5C8 7.5 6 9.5 6 12.5C6 15.5 8 17.5 11 17.5C13 17.5 14.5 16.5 15.5 15L13.5 14C13 15 12 15.5 11 15.5C9.5 15.5 8.5 14.2 8.5 12.5C8.5 10.8 9.5 9.5 11 9.5C12.5 9.5 13.5 10.3 14 11.5H16Z" fill="#fff" />
+        </svg>
+      );
+    case "rest apis":
+    case "api":
+    case "rest api":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      );
+    case "vs code":
+    case "vscode":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none">
+          <path d="M17.5 2L5.5 11L2 8.5V15.5L5.5 13L17.5 22L22 20V4L17.5 2Z" fill="#007ACC" />
+          <path d="M17.5 2L10 12L17.5 22V2Z" fill="#1F9CF0" />
+        </svg>
+      );
+    case "design systems":
+    case "design tokens":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="3" width="7" height="7" rx="1.5" />
+          <rect x="14" y="14" width="7" height="7" rx="1.5" />
+          <rect x="3" y="14" width="7" height="7" rx="1.5" />
+        </svg>
+      );
+    case "ui/ux architecture":
+    case "ui/ux":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+        </svg>
+      );
+    case "modern motion easing":
+    case "motion":
+      return (
+        <svg className={className} viewBox="0 0 24 24" fill="none" stroke="#F59E0B" strokeWidth="2">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3 17C6 17 8 7 12 7C16 7 18 17 21 17" />
+        </svg>
+      );
     case "vue":
       return (
         <svg className={className} viewBox="0 0 24 24" fill="none">

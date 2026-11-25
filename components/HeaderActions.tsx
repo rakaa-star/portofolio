@@ -14,89 +14,58 @@ export default function HeaderActions({
 
   return (
     <div className={`flex items-center gap-2.5 sm:gap-3 ${className}`}>
-      {/* 1. LANGUAGE SWITCHER PILL (ID / EN) matching screenshot */}
+      {/* 1. LANGUAGE SELECTOR (ID / EN) - High Contrast Glassmorphic Toggle */}
       <div
-        className="inline-flex items-center p-1 rounded-full bg-slate-900/90 backdrop-blur-xl border border-slate-700/80 shadow-md shadow-black/20"
+        className="inline-flex items-center p-0.5 rounded-full bg-white/[0.04] border border-white/10 shadow-sm"
         role="group"
         aria-label="Language selector"
       >
-        {/* Indonesian Option */}
         <button
           type="button"
           onClick={() => setLang("id")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
+          className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-medium transition-all duration-300 cursor-pointer ${
             lang === "id"
-              ? "bg-white text-slate-950 shadow-md shadow-black/30 scale-100"
-              : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+              ? "bg-[#F59E0B] text-[#0A0A0C] font-bold shadow-xs"
+              : "text-slate-400 hover:text-white"
           }`}
           aria-pressed={lang === "id"}
           title="Bahasa Indonesia"
         >
-          {/* Indonesian Flag SVG */}
-          <span className="w-4 h-3 rounded-[2px] overflow-hidden flex flex-col border border-black/20 shadow-xs shrink-0">
-            <span className="w-full h-1/2 bg-[#ff0000]" />
-            <span className="w-full h-1/2 bg-[#ffffff]" />
-          </span>
-          <span className="tracking-wide">ID</span>
+          ID
         </button>
 
-        {/* English Option */}
         <button
           type="button"
           onClick={() => setLang("en")}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 cursor-pointer ${
+          className={`px-2.5 py-1 rounded-full text-[11px] font-mono font-medium transition-all duration-300 cursor-pointer ${
             lang === "en"
-              ? "bg-white text-slate-950 shadow-md shadow-black/30 scale-100"
-              : "text-slate-400 hover:text-white hover:bg-slate-800/60"
+              ? "bg-[#F59E0B] text-[#0A0A0C] font-bold shadow-xs"
+              : "text-slate-400 hover:text-white"
           }`}
           aria-pressed={lang === "en"}
           title="English"
         >
-          {/* UK Flag SVG */}
-          <span className="w-4 h-3 rounded-[2px] overflow-hidden relative bg-[#012169] border border-black/20 shadow-xs shrink-0">
-            {/* White diagonals */}
-            <svg className="w-full h-full" viewBox="0 0 60 30" fill="none">
-              <clipPath id="uk-clip">
-                <rect width="60" height="30" />
-              </clipPath>
-              <g clipPath="url(#uk-clip)">
-                <path d="M0 0L60 30M60 0L0 30" stroke="#fff" strokeWidth="6" />
-                <path d="M0 0L60 30M60 0L0 30" stroke="#C8102E" strokeWidth="2" />
-                <path d="M30 0V30M0 15H60" stroke="#fff" strokeWidth="10" />
-                <path d="M30 0V30M0 15H60" stroke="#C8102E" strokeWidth="6" />
-              </g>
-            </svg>
-          </span>
-          <span className="tracking-wide">EN</span>
+          EN
         </button>
       </div>
 
-      {/* 2. LIHAT CV / VIEW CV PILL BUTTON matching screenshot */}
+      {/* 2. CV ACTION BUTTON - Sleek Glass Pill */}
       <button
         type="button"
         onClick={openCvModal}
-        className={`group inline-flex items-center gap-2 rounded-full font-bold text-white bg-[#0e131f] hover:bg-[#161f32] border border-slate-700/90 hover:border-cyan-500/60 shadow-lg shadow-black/30 transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer ${
-          size === "large"
-            ? "px-6 py-3 text-sm sm:text-base"
-            : "px-4 sm:px-5 py-2 text-xs sm:text-sm"
+        className={`group inline-flex items-center gap-1.5 rounded-full font-sans font-medium text-white bg-white/[0.05] hover:bg-white/[0.1] border border-white/10 hover:border-[#F59E0B]/50 transition-all duration-300 active:scale-95 cursor-pointer ${
+          size === "compact"
+            ? "px-3 py-1 text-xs"
+            : size === "large"
+            ? "px-5 py-2.5 text-sm"
+            : "px-4 py-1.5 sm:px-4.5 sm:py-2 text-xs"
         }`}
         aria-label={t.nav.viewCv}
       >
-        {/* Document / CV Icon matching screenshot */}
-        <svg
-          className="w-4 h-4 text-cyan-400 group-hover:text-cyan-300 transition-colors shrink-0"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-          />
-        </svg>
-        <span className="tracking-wide font-extrabold">{t.nav.viewCv}</span>
+        <span>{t.nav.viewCv}</span>
+        <span className="text-[#F59E0B] text-[11px] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300">
+          ↗
+        </span>
       </button>
     </div>
   );
