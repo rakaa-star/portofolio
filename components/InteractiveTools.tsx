@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -98,9 +97,7 @@ export default function InteractiveTools({ }: InteractiveToolsProps) {
   const filteredGroups =
     activeTab === "all"
       ? TECH_INDEX_GROUPS
-      : TECH_INDEX_GROUPS.filter(
-        (group) => group.category === activeTab
-      );
+      : TECH_INDEX_GROUPS.filter((group) => group.category === activeTab);
 
   return (
     <div className="space-y-10 max-w-7xl mx-auto">
@@ -110,8 +107,8 @@ export default function InteractiveTools({ }: InteractiveToolsProps) {
           type="button"
           onClick={() => setActiveTab("all")}
           className={`px-4 py-1.5 rounded-md text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer ${activeTab === "all"
-              ? "bg-amber-400 text-zinc-950 font-bold shadow-md shadow-amber-400/20"
-              : "bg-white/[0.03] text-zinc-400 border border-white/[0.08] hover:border-amber-400/40 hover:text-white"
+            ? "bg-amber-400 text-zinc-950 font-bold shadow-md shadow-amber-400/20"
+            : "bg-white/[0.03] text-zinc-400 border border-white/[0.08] hover:border-amber-400/40 hover:text-white"
             }`}
         >
           All Architectures
@@ -123,8 +120,8 @@ export default function InteractiveTools({ }: InteractiveToolsProps) {
             type="button"
             onClick={() => setActiveTab(group.category)}
             className={`px-4 py-1.5 rounded-md text-xs font-mono tracking-wider uppercase transition-all duration-300 cursor-pointer ${activeTab === group.category
-                ? "bg-amber-400 text-zinc-950 font-bold shadow-md shadow-amber-400/20"
-                : "bg-white/[0.03] text-zinc-400 border border-white/[0.08] hover:border-amber-400/40 hover:text-white"
+              ? "bg-amber-400 text-zinc-950 font-bold shadow-md shadow-amber-400/20"
+              : "bg-white/[0.03] text-zinc-400 border border-white/[0.08] hover:border-amber-400/40 hover:text-white"
               }`}
           >
             {group.categoryLabelEn}
@@ -132,8 +129,14 @@ export default function InteractiveTools({ }: InteractiveToolsProps) {
         ))}
       </div>
 
-      {/* Main Two-Part Architecture Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative">
+        {/* Top Hairline accent */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.12] to-transparent"
+        />
+
         {/* LEFT AREA: STRUCTURED TECHNOLOGY GROUPS */}
         <div className="lg:col-span-7 space-y-6">
           {filteredGroups.map((group) => (
@@ -184,8 +187,8 @@ export default function InteractiveTools({ }: InteractiveToolsProps) {
                       onMouseEnter={() => setHoveredTech(item.name)}
                       onMouseLeave={() => setHoveredTech(null)}
                       className={`group/item flex items-center justify-between p-2.5 rounded-xl border transition-all duration-200 cursor-default ${isHovered
-                          ? "bg-amber-400/[0.07] border-amber-400/40 translate-x-1"
-                          : "bg-white/[0.02] border-white/[0.05] hover:border-amber-400/20 hover:bg-white/[0.04]"
+                        ? "bg-amber-400/[0.07] border-amber-400/40 translate-x-1"
+                        : "bg-white/[0.02] border-white/[0.05] hover:border-amber-400/20 hover:bg-white/[0.04]"
                         }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -227,8 +230,8 @@ export default function InteractiveTools({ }: InteractiveToolsProps) {
             </div>
 
             <p className="text-xs text-zinc-400 font-sans">
-              Real-time procedural 3D model connecting front-end, back-end,
-              and cloud systems.
+              Real-time procedural 3D model connecting front-end, back-end, and
+              cloud systems.
             </p>
           </div>
 
